@@ -1,0 +1,1 @@
+export const EMAIL_TYPE_CHANGE="EMAIL_TYPE_CHANGE";

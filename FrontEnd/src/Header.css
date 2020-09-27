@@ -1,0 +1,16 @@
+.Header{
+    height: 90px;
+    color: rgb(255, 94, 0);
+    background-color: beige;
+}
+
+.shortlistLogo{
+    height: 30px;
+    
+    width: 70px;
+    text-align: left;
+}
+
+.Heading{
+    text-align: center;
+}

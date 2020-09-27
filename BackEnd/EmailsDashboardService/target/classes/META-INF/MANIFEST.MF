@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Built-By: raghavendra
+Build-Jdk: 11.0.8
+Implementation-Title: EmailsDashboardService
+Implementation-Version: 0.0.1-SNAPSHOT
+Implementation-Vendor-Id: com.shortlist.emailsdashboard
+Implementation-Vendor: Pivotal Software, Inc.
+Implementation-URL: http://projects.spring.io/spring-boot/EmailsDashboar
+ dService/
+Created-By: Maven Integration for Eclipse
+

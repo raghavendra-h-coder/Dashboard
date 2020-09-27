@@ -1,0 +1,1 @@
+export const EMAILS_JOB_CHANGE="EMAILS_JOB_CHANGE";
