@@ -8,11 +8,12 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Axios from 'axios';
-import {useSelector} from 'react-redux';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import IconButton from '@material-ui/core/IconButton';
 
 var directionIndex=[true,false,false,false,false,false];
 function EmailTableViewComponent(){
-    const state=useSelector(state=>state.Emails);
+    
     const headCells = [
         { index:0,id: 'candidateId', numeric: false, disablePadding: true, label: 'Candidate Id' },
         { index:1,id: 'jobId', numeric: true, disablePadding: false, label: 'Job Id' },
@@ -44,78 +45,61 @@ function EmailTableViewComponent(){
       const [page,setPage]=useState(0);
       const [searchValue,setSearchValue]=useState(null);
       const [sortValue,setSortValue]=useState(sortByBody);
+      const [refreshFlag,setRefreshFlag]=useState(false);
       let rowsPerPage=50;
 
     useEffect(()=>{
-      console.log("emails table view");
+      let jobId=parseInt(localStorage.getItem('emails_jobId'),10);
+      let startDate=localStorage.getItem('emails_startDate');
+      startDate=startDate==null?new Date('2000-01-01').getTime():new Date(startDate).getTime();
+      let endDate=localStorage.getItem('emails_endDate');
+      endDate=endDate==null?new Date('2020-12-01').getTime():new Date(endDate).getTime();
       const requestPayload={
-        jobId:JSON.stringify(state.job)!='{}'?state.job:null,
-        startDate:new Date(state.startDate).getTime(),
-        endDate:new Date(state.endDate).getTime(),
+        searchValue:searchValue,
+        jobId:jobId!==null?jobId:null,
+        startDate:startDate,
+        endDate:endDate,
         page:page,
         size:rowsPerPage,
         orderBy:sortValue.orderBy,
         direction:sortValue.order
       }
+      console.log("jobId:"+requestPayload.jobId);
       fetchData(requestPayload);
-    },[]);
+    },[page,rowsPerPage,sortValue.order,sortValue.orderBy,searchValue,refreshFlag]);
 
     const handleChangePage = async (event, newPage) => {
       setPage(newPage);
-      const requestPayload={
-        searchValue:searchValue,
-        jobId:JSON.stringify(state.job)!='{}'?state.job:null,
-        startDate:new Date(state.startDate).getTime(),
-        endDate:new Date(state.endDate).getTime(),
-        page:page,
-        size:rowsPerPage,
-        orderBy:sortValue.orderBy,
-        direction:sortValue.order
-      }
-      await fetchData(requestPayload);
     };
 
     const handleSearch=async()=>{
       let searchValue=document.getElementById("search").value;
       setSearchValue(searchValue);
-      const requestPayload={
-        searchValue:searchValue,
-        jobId:JSON.stringify(state.job)!='{}'?state.job:null,
-        startDate:new Date(state.startDate).getTime(),
-        endDate:new Date(state.endDate).getTime(),
-        page:page,
-        size:rowsPerPage,
-        orderBy:sortValue.orderBy,
-        direction:sortValue.order
-      }
-      await fetchData(requestPayload);
     }
 
     const createSortHandler=async(value,index)=>{
       let sortDirection=directionIndex[index];
-      setSortValue({
-        order:sortDirection?'desc':'asc',
+      setSortValue((prevState)=>({
+        order:prevState.order==='asc'?'desc':'asc',
         orderBy:value
-      })
+      }))
       directionIndex[index]=!sortDirection;
-      console.log("direction index:"+directionIndex);
-      const requestPayload={
-        searchValue:searchValue,
-        jobId:JSON.stringify(state.job)!='{}'?state.job:null,
-        startDate:new Date(state.startDate).getTime(),
-        endDate:new Date(state.endDate).getTime(),
-        page:page,
-        size:rowsPerPage,
-        orderBy:sortValue.orderBy,
-        direction:sortValue.order
-      }
-      await fetchData(requestPayload);
+    }
+
+    const refreshEmailListView=()=>{
+      setRefreshFlag((prevState)=>({
+        refreshFlag:!prevState
+      }))
     }
 
     return (
          <React.Fragment>
            <input id="search"></input> &nbsp; &nbsp;
            <button onClick={handleSearch}>Search</button>
+           &nbsp;
+           <IconButton onClick={refreshEmailListView}>
+            <RefreshIcon fontSize="large"/>
+            </IconButton>
            <br></br>
        <TableContainer>
          <Table>
@@ -124,7 +108,7 @@ function EmailTableViewComponent(){
              {headCells.map((headCell) => (
                <TableCell
                  key={headCell.id}
-                  sortDirection={directionIndex[headCell.index]}
+                  sortDirection={directionIndex[headCell.index]?'asc':'desc'}
                >
                  <TableSortLabel
                     active={sortValue.orderBy === headCell.id}
@@ -138,8 +122,8 @@ function EmailTableViewComponent(){
            </TableRow>
          </TableHead> 
          <TableBody>
-             {responseModel.emailsLogList!=undefined && responseModel.emailsLogList.map((e)=>(
-                 <TableRow>
+             {responseModel.emailsLogList!==undefined && responseModel.emailsLogList.map((e)=>(
+                 <TableRow key={e.id}>
                      <TableCell
                          key={e.candidateId} >
                            {e.candidateId}  

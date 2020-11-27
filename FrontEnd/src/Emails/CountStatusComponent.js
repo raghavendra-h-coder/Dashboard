@@ -9,7 +9,7 @@ const CountStatusComponent=(props)=>{
     const [countStatus,setCountStatus]=useState([]);
     useEffect(()=>{
         var requestPayload={
-            jobId:state.job.value,
+            jobId:parseInt(state.job.value,10),
             emailType:props.title,
             creationDate:Date.parse(state.startDate),
             endDate:Date.parse(state.endDate)
@@ -19,7 +19,7 @@ const CountStatusComponent=(props)=>{
             console.log("new api:"+response.data);
             setCountStatus(response.data)
         })
-    },[state])
+    },[state,props.title])
     const options = {
         animationEnabled: true,
         exportEnabled: true,

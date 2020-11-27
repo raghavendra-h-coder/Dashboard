@@ -11,7 +11,7 @@ const EmailsDashboardComponent=()=>{
             <Header title="Emails Dashboard"/>
             <SelectionComponent />
             <br></br>
-           { JSON.stringify(job)!='{}' &&
+           { JSON.stringify(job)!=='{}' &&
             <VisualisationComponent />}
         </React.Fragment>
     )

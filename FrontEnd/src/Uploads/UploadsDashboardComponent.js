@@ -11,7 +11,7 @@ const UploadsDashboardComponent=()=>{
             <Header title="Uploads Dashboard"/>
             <SelectionComponent />
             <br></br>
-           { JSON.stringify(job)!='{}' &&
+           { JSON.stringify(job)!=='{}' &&
             <VisualisationComponent />}
         </React.Fragment>
     )

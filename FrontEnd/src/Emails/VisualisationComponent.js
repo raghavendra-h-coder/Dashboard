@@ -14,7 +14,7 @@ const VisualisationComponent=()=>{
 
     const [emailsStats,setEmailStats]=useState([]);
     useEffect(()=>{
-        if(JSON.stringify(state.job)!='{}')
+        if(JSON.stringify(state.job)!=='{}')
         {
         var countFetchObject={
             jobId:parseInt(state.job.value,10),
